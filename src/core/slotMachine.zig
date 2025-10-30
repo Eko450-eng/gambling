@@ -5,7 +5,7 @@ const Vec2 = rl.Vector2;
 
 const FONT_SIZE: i32 = 50;
 const WinColor = rl.Color.gold;
-const LooseColor = rl.Color.red;
+const LooseColor = rl.Color.white;
 const NeutralColor = rl.Color.white;
 
 var text_display_timer: f32 = 0.0;
@@ -26,6 +26,7 @@ const Symbols = struct {
     hitChance: i32,
     price: i32,
     multiplier: i32,
+    icon: Vec2,
     // effect: ?,
 };
 
@@ -42,13 +43,13 @@ pub const SlotMachine = struct {
 
     pub fn init(lines: usize) !SlotMachine {
         const symbols: [7]Symbols = [_]Symbols{
-            Symbols{ .symbol = '1', .hitChance = 1, .multiplier = 1, .price = 1 },
-            Symbols{ .symbol = '2', .hitChance = 1, .multiplier = 1, .price = 1 },
-            Symbols{ .symbol = '3', .hitChance = 1, .multiplier = 1, .price = 2 },
-            Symbols{ .symbol = '4', .hitChance = 1, .multiplier = 1, .price = 2 },
-            Symbols{ .symbol = '5', .hitChance = 1, .multiplier = 1, .price = 2 },
-            Symbols{ .symbol = '6', .hitChance = 1, .multiplier = 1, .price = 3 },
-            Symbols{ .symbol = '7', .hitChance = 1, .multiplier = 1, .price = 4 },
+            Symbols{ .symbol = '1', .hitChance = 1, .multiplier = 1, .price = 1, .icon = Vec2{ .x = 0, .y = 341 } },
+            Symbols{ .symbol = '2', .hitChance = 1, .multiplier = 1, .price = 1, .icon = Vec2{ .x = 682, .y = 341 } },
+            Symbols{ .symbol = '3', .hitChance = 1, .multiplier = 1, .price = 2, .icon = Vec2{ .x = 0, .y = 682 } },
+            Symbols{ .symbol = '4', .hitChance = 1, .multiplier = 1, .price = 2, .icon = Vec2{ .x = 341, .y = 682 } },
+            Symbols{ .symbol = '5', .hitChance = 1, .multiplier = 1, .price = 2, .icon = Vec2{ .x = 341, .y = 0 } },
+            Symbols{ .symbol = '6', .hitChance = 1, .multiplier = 1, .price = 3, .icon = Vec2{ .x = 682, .y = 682 } },
+            Symbols{ .symbol = '7', .hitChance = 1, .multiplier = 1, .price = 4, .icon = Vec2{ .x = 341, .y = 341 } },
         };
 
         return .{
@@ -65,7 +66,6 @@ pub const SlotMachine = struct {
     }
 
     pub fn action(machine: *SlotMachine, player: *Player, input: u32) !void {
-        machine.ready = true;
         if (player.coins - input <= 0) return;
         machine.paidOut = false;
         player.coins -= input;
@@ -84,22 +84,25 @@ pub const SlotMachine = struct {
         }
     }
 
+    /// Checks if a row contains a winning count of symbols
     fn checkWinningRow(ma: *SlotMachine, row: [5]u8) WinRow {
         var winRowCount: i32 = 0;
 
-        var winRowColor: [5]rl.Color = [5]rl.Color{ .gray, .gray, .gray, .gray, .gray };
+        var winRowColor: [5]rl.Color = [5]rl.Color{ NeutralColor, NeutralColor, NeutralColor, NeutralColor, NeutralColor };
 
         for (0..row.len) |i| {
-            if (row[i] == row[i + 1]) {
-                const curElement = row[i];
-                for (ma.symbols) |symbol| {
-                    if (curElement == symbol.symbol) {
-                        winRowCount += ma.getPrice(row[i], 1, ma.playInput);
+            if (i < 4) {
+                if (row[i] == row[i + 1]) {
+                    const curElement = row[i];
+                    for (ma.symbols) |symbol| {
+                        if (curElement == symbol.symbol) {
+                            winRowCount += ma.getPrice(row[i], 1, ma.playInput);
+                        }
                     }
-                }
-                if (winRowCount > 0) winRowColor[i + 1] = WinColor;
-                winRowColor[i] = WinColor;
-            } else break;
+                    if (winRowCount > 0) winRowColor[i + 1] = WinColor;
+                    winRowColor[i] = WinColor;
+                } else break;
+            }
         }
         return WinRow{
             .count = winRowCount,
@@ -124,9 +127,9 @@ pub const SlotMachine = struct {
     fn checkWinningDiag(ma: *SlotMachine, items: [3][5]u8) WinDia {
         var winRowCount: [2]i32 = [2]i32{ 0, 0 };
         var winRowColor: [3][5]rl.Color = [3][5]rl.Color{
-            .{ .gray, .gray, .gray, .gray, .gray },
-            .{ .gray, .gray, .gray, .gray, .gray },
-            .{ .gray, .gray, .gray, .gray, .gray },
+            .{ NeutralColor, NeutralColor, NeutralColor, NeutralColor, NeutralColor },
+            .{ NeutralColor, NeutralColor, NeutralColor, NeutralColor, NeutralColor },
+            .{ NeutralColor, NeutralColor, NeutralColor, NeutralColor, NeutralColor },
         };
 
         if (items[0][0] == items[1][1]) {
@@ -187,6 +190,7 @@ pub const SlotMachine = struct {
             a.a == b.a;
     }
 
+    /// Checks for all winning lines and pays out to the player
     fn checkWinningLines(ma: *SlotMachine, player: *Player) ![3][5]rl.Color {
         var colors: [3][5]rl.Color = undefined;
 
@@ -254,8 +258,6 @@ pub const SlotMachine = struct {
                 pos.x = widthFloatRaw * (0.15 * itemIndexFloat);
                 const text = std.fmt.bufPrintZ(&text_buf, "{c}", .{out}) catch "";
 
-                rl.drawTextureEx(FieldTexture, pos, 0.0, 0.08, colors[itemIndex]);
-
                 const iconPos: Vec2 = getIcon(out);
                 const rec = rl.Rectangle.init(iconPos.x, iconPos.y, 342, 342);
 
@@ -271,6 +273,7 @@ pub const SlotMachine = struct {
                     const y_int: i32 = @intFromFloat(pos.y);
                     rl.drawText(text, x_int + font_margin, y_int + font_margin, FONT_SIZE, .white);
                 }
+                rl.drawTextureEx(FieldTexture, pos, 0.0, 0.08, colors[itemIndex]);
             }
         }
 
@@ -282,6 +285,19 @@ pub const SlotMachine = struct {
             rl.drawText(rl.textFormat("%02i", .{machine.winSum}), x, y, FONT_SIZE, WinColor);
             text_display_timer -= rl.getFrameTime();
         }
+
+        var coinColor = rl.Color.green;
+
+        if (player.coins > 1000) {
+            coinColor = rl.Color.gold;
+        } else if (player.coins >= 100) {
+            coinColor = rl.Color.green;
+        } else if (player.coins <= 10) {
+            coinColor = rl.Color.red;
+        }
+
+        if (player.lastWin > 0) rl.drawText(rl.textFormat("Last win: %02u", .{player.lastWin}), 10, rl.getScreenHeight() - 60, 30, coinColor);
+        rl.drawText(rl.textFormat("Coins: %02u", .{player.coins}), 10, rl.getScreenHeight() - 30, 30, coinColor);
     }
 
     fn getIcon(char: u8) Vec2 {
