@@ -3,3 +3,6 @@
 .zig-cache
 gameIdea.md
 config.json
+conceptFiles/*
+conceptFiles/
+conceptFiles

@@ -1,5 +1,5 @@
 const std = @import("std");
-const gambling = @import("../main.zig");
+const doctorsandman = @import("../main.zig");
 const rl = @import("raylib");
 const Player = @import("player.zig").Player;
 const Vec2 = rl.Vector2;
@@ -13,13 +13,13 @@ const STRAIGHT_TOP: [5][2]usize = [_][2]usize{ .{ 0, 0 }, .{ 0, 1 }, .{ 0, 2 }, 
 const STRAIGHT_MID: [5][2]usize = [_][2]usize{ .{ 1, 0 }, .{ 1, 1 }, .{ 1, 2 }, .{ 1, 3 }, .{ 1, 4 } };
 const STRAIGHT_BOTTOM: [5][2]usize = [_][2]usize{ .{ 2, 0 }, .{ 2, 1 }, .{ 2, 2 }, .{ 2, 3 }, .{ 2, 4 } };
 
-const TEN: Symbol = Symbol{ .id = 1, .color = gambling.NeutralColor, .iconPos = Vec2{ .x = 0, .y = 341 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 2.5, 10.0 } };
-const JOKER: Symbol = Symbol{ .id = 2, .color = gambling.NeutralColor, .iconPos = Vec2{ .x = 682, .y = 341 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 2.5, 10.0 } };
-const KING: Symbol = Symbol{ .id = 3, .color = gambling.NeutralColor, .iconPos = Vec2{ .x = 0, .y = 682 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 4.0, 15.0 } };
-const ACE: Symbol = Symbol{ .id = 4, .color = gambling.NeutralColor, .iconPos = Vec2{ .x = 0, .y = 682 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 4.0, 15.0 } };
-const SCARAB: Symbol = Symbol{ .id = 5, .color = gambling.NeutralColor, .iconPos = Vec2{ .x = 341, .y = 0 }, .priceList = [5]f32{ 0.0, 0.5, 3.0, 10.0, 75.0 } };
-const EYE: Symbol = Symbol{ .id = 6, .color = gambling.NeutralColor, .iconPos = Vec2{ .x = 341, .y = 341 }, .priceList = [5]f32{ 0.0, 0.5, 3.0, 10.0, 75.0 } };
-const RA: Symbol = Symbol{ .id = 7, .color = gambling.NeutralColor, .iconPos = Vec2{ .x = 682, .y = 682 }, .priceList = [5]f32{ 0.0, 0.5, 4.0, 40.0, 200.0 } };
+const TEN: Symbol = Symbol{ .id = 1, .color = doctorsandman.NeutralColor, .iconPos = Vec2{ .x = 0, .y = 341 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 2.5, 10.0 } };
+const JOKER: Symbol = Symbol{ .id = 2, .color = doctorsandman.NeutralColor, .iconPos = Vec2{ .x = 682, .y = 341 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 2.5, 10.0 } };
+const KING: Symbol = Symbol{ .id = 3, .color = doctorsandman.NeutralColor, .iconPos = Vec2{ .x = 0, .y = 682 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 4.0, 15.0 } };
+const ACE: Symbol = Symbol{ .id = 4, .color = doctorsandman.NeutralColor, .iconPos = Vec2{ .x = 0, .y = 682 }, .priceList = [5]f32{ 0.0, 0.0, 0.5, 4.0, 15.0 } };
+const SCARAB: Symbol = Symbol{ .id = 5, .color = doctorsandman.NeutralColor, .iconPos = Vec2{ .x = 341, .y = 0 }, .priceList = [5]f32{ 0.0, 0.5, 3.0, 10.0, 75.0 } };
+const EYE: Symbol = Symbol{ .id = 6, .color = doctorsandman.NeutralColor, .iconPos = Vec2{ .x = 341, .y = 341 }, .priceList = [5]f32{ 0.0, 0.5, 3.0, 10.0, 75.0 } };
+const RA: Symbol = Symbol{ .id = 7, .color = doctorsandman.NeutralColor, .iconPos = Vec2{ .x = 682, .y = 682 }, .priceList = [5]f32{ 0.0, 0.5, 4.0, 40.0, 200.0 } };
 const SYMBOLS: [7]Symbol = [7]Symbol{ TEN, JOKER, KING, ACE, SCARAB, EYE, RA };
 
 const SHAPES: [5][5][2]usize = [5][5][2]usize{
@@ -112,8 +112,8 @@ pub const SlotMachine = struct {
         const winnings: f32 = machine.symbolList.getWins();
         player.lastWin = winnings;
         player.coins += winnings;
-        if (player.spinsSinceLastInterestCharge == gambling.INTEREST_DAYS) {
-            player.debt *= gambling.INTEREST;
+        if (player.spinsSinceLastInterestCharge == doctorsandman.INTEREST_DAYS) {
+            player.debt *= doctorsandman.INTEREST;
             player.spinsSinceLastInterestCharge = 0;
         }
         player.spinsSinceLastInterestCharge += 1;

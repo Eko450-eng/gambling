@@ -1,5 +1,5 @@
 const std = @import("std");
-const gambling = @import("../main.zig");
+const doctorsandman = @import("../main.zig");
 const rl = @import("raylib");
 const rg = @import("raygui");
 const Translations = @import("translations/game_text.zig");
@@ -48,9 +48,9 @@ pub const Player = struct {
         const screenHeightHalfed: f32 = @divFloor(screenHeight, 2);
         const screenWidthHalfed: f32 = @divFloor(screenWidth, 2);
 
-        rl.drawText(rl.textFormat(translator.translate("PlayerCoins"), .{player.coins}), 0, rl.getScreenHeight() - gambling.FONT_SIZE, gambling.FONT_SIZE, gambling.NeutralColor);
-        if (player.lastWin > 0) rl.drawText(rl.textFormat(translator.translate("LastWin"), .{player.lastWin}), 0, rl.getScreenHeight() - gambling.FONT_SIZE * 2, gambling.FONT_SIZE, gambling.WinColor);
-        if (player.debt > 0) rl.drawText(rl.textFormat(translator.translate("Debt"), .{player.debt}), 0, rl.getScreenHeight() - gambling.FONT_SIZE * 3, gambling.FONT_SIZE, gambling.LooseColor);
+        rl.drawText(rl.textFormat(translator.translate("PlayerCoins"), .{player.coins}), 0, rl.getScreenHeight() - doctorsandman.FONT_SIZE, doctorsandman.FONT_SIZE, doctorsandman.NeutralColor);
+        if (player.lastWin > 0) rl.drawText(rl.textFormat(translator.translate("LastWin"), .{player.lastWin}), 0, rl.getScreenHeight() - doctorsandman.FONT_SIZE * 2, doctorsandman.FONT_SIZE, doctorsandman.WinColor);
+        if (player.debt > 0) rl.drawText(rl.textFormat(translator.translate("Debt"), .{player.debt}), 0, rl.getScreenHeight() - doctorsandman.FONT_SIZE * 3, doctorsandman.FONT_SIZE, doctorsandman.LooseColor);
 
         if (player.coins <= 10) {
             const res = rg.messageBox(

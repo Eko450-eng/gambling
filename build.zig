@@ -19,19 +19,19 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const mod = b.addModule("gambling", .{
+    const mod = b.addModule("doctorsandman", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
     });
 
     const exe = b.addExecutable(.{
-        .name = "gambling",
+        .name = "doctorsandman",
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
             .imports = &.{
-                .{ .name = "gambling", .module = mod },
+                .{ .name = "doctorsandman", .module = mod },
             },
         }),
     });
@@ -39,6 +39,7 @@ pub fn build(b: *std.Build) void {
     const raylib_dep = b.dependency("raylib_zig", .{
         .target = target,
         .optimize = optimize,
+        .linux_display_backend = .Both,
     });
 
     const raylib = raylib_dep.module("raylib");

@@ -1,7 +1,8 @@
 .{
-    .name = .gambling,
+    .name = .doctorsandman,
     .version = "0.0.0",
-    .fingerprint = 0xdb0b03f50ba6549e, // Changing this has security and trust implications.
+    // .fingerprint = 0xdb0b03f50ba6549e, // Changing this has security and trust implications.
+    .fingerprint = 0xda4ef98b02313b32,
     .minimum_zig_version = "0.15.2",
     .dependencies = .{
         .raylib_zig = .{
